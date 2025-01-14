@@ -17,6 +17,10 @@ public class UserService {
         return iUserRepository.findUserByEmailAndActive(email, active);
     }
 
+    public UserModel findUserByTokenAndActive(String token, boolean active) {
+        return iUserRepository.findByTokenAndActive(token, active);
+    }
+
     public List<UserModel> getUsers() {
         return iUserRepository.findAll();
     }

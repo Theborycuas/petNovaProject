@@ -38,6 +38,8 @@ public class UserModel {
     private String firebaseToken;
 
     private LocalDateTime creationDate;
+
+    @Column(columnDefinition = "TEXT")
     private String linkPerfilPhoto;
 
 }
