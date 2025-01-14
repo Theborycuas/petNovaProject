@@ -2,16 +2,15 @@ package com.example.codesoftlution.petNovaBackend.controllers;
 
 
 import com.example.codesoftlution.petNovaBackend.models.UserModel;
+import com.example.codesoftlution.petNovaBackend.repositories.IUserRepository;
 import com.example.codesoftlution.petNovaBackend.response.ListUserResponse;
 import com.example.codesoftlution.petNovaBackend.services.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.logging.Logger;
@@ -24,6 +23,24 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private IUserRepository userRepository;
+
+    @RequestMapping(value = "/userRegister", method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity userRegister(@Valid @RequestBody UserModel userModel) {
+        try{
+            UserModel usuarioEncontrado = userService.findUserByEmail(userModel.getEmail(), true);
+            if (usuarioEncontrado == null) {
+                userService.registerSetUser(userModel);
+                return new ResponseEntity("USUARIO CREADO", HttpStatus.CREATED);
+            } else {
+                return new ResponseEntity("USUARIO NO CREADO", HttpStatus.CONFLICT);
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
 
     @RequestMapping(value = "/getUsers", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity getUsers() {

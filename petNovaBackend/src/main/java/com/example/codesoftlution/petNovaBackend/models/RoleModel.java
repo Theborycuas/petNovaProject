@@ -7,15 +7,15 @@ import lombok.Setter;
 @Setter
 @Getter
 @Entity
-@Table(name = "user_rol")
-public class RolModel {
+@Table(name = "user_role")
+public class RoleModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(unique = true, nullable = false)
-    private String rolName;
+    private String roleName;
 
     private String description;
 }

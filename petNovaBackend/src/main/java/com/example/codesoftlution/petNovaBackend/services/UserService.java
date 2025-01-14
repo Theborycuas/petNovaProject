@@ -5,6 +5,7 @@ import com.example.codesoftlution.petNovaBackend.repositories.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -12,7 +13,18 @@ public class UserService {
     @Autowired
     IUserRepository iUserRepository;
 
-    public List<UserModel> getUsers(){return iUserRepository.findAll();}
+    public UserModel findUserByEmail(String email, boolean active) {
+        return iUserRepository.findUserByEmailAndActive(email, active);
+    }
 
-    public UserModel saveUser(UserModel userModel){return iUserRepository.save(userModel);}
+    public List<UserModel> getUsers() {
+        return iUserRepository.findAll();
+    }
+
+    public UserModel registerSetUser(UserModel userModel) {
+        LocalDateTime dateNow = LocalDateTime.now();
+        userModel.setCreationDate(dateNow);
+        userModel.setToken("987654321");
+        return iUserRepository.save(userModel);
+    }
 }

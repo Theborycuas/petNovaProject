@@ -26,8 +26,8 @@ public class UserModel {
     private String password;
 
     @ManyToOne
-    @JoinColumn(name = "rol_id", nullable = false)
-    private RolModel role;
+    @JoinColumn(name = "role_id", nullable = false)
+    private RoleModel role;
     private String phoneNumber;
     private boolean active;
 
