@@ -72,7 +72,7 @@ public class UserController {
                 userService.registerSetUser(usuarioEncontrado);
                 return new ResponseEntity("USUARIO ACTUALIZADO", HttpStatus.OK);
             }else {
-                return new ResponseEntity("USUARIO NO ENCONTRADO", HttpStatus.NOT_FOUND);
+                return new ResponseEntity("USUARIO NO ENCONTRADO", HttpStatus.CONFLICT);
             }
         } catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
@@ -92,6 +92,23 @@ public class UserController {
 
         } catch (Exception e) {
             return new ResponseEntity<>(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @RequestMapping(value = "/deleteUser", method = RequestMethod.DELETE, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity deleteUser() {
+        try{
+            String token = request.getHeader("PnAuthorization");
+            UserModel usuarioEncontrado = userService.findUserByTokenAndActive(token, true);
+            if(usuarioEncontrado != null) {
+                usuarioEncontrado.setActive(false);
+                userService.registerSetUser(usuarioEncontrado);
+                return new ResponseEntity("USUARIO ELIMINADO", HttpStatus.OK);
+            }else{
+                return new ResponseEntity("USUARIO NO ENCONTRADO", HttpStatus.CONFLICT);
+            }
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }
 
