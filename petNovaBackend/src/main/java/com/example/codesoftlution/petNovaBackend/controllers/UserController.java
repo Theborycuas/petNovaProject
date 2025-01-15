@@ -14,9 +14,22 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import javax.print.attribute.standard.Media;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.IvParameterSpec;
+import javax.crypto.spec.SecretKeySpec;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
 import java.util.List;
 import java.util.logging.Logger;
+
+import static com.example.codesoftlution.petNovaBackend.utils.Constants.*;
 
 @RestController
 @RequestMapping("api/users")
@@ -103,12 +116,50 @@ public class UserController {
             if(usuarioEncontrado != null) {
                 usuarioEncontrado.setActive(false);
                 userService.registerSetUser(usuarioEncontrado);
+
                 return new ResponseEntity("USUARIO ELIMINADO", HttpStatus.OK);
             }else{
                 return new ResponseEntity("USUARIO NO ENCONTRADO", HttpStatus.CONFLICT);
             }
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/pnCifrado/{token}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public String pnCifrado(@PathVariable("token") String token) {
+        try {
+            IvParameterSpec iv = new IvParameterSpec(PN_INIT_VECTOR.getBytes(STANDARDCHARSETS_UFT_8));
+            SecretKeySpec secretKeySpec = new SecretKeySpec(PN_AES_KEY.getBytes(STANDARDCHARSETS_UFT_8), ALGORITHM_AES);
+            Cipher cipher;
+            cipher = Cipher.getInstance(TRANSFORMATION_AES);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKeySpec, iv);
+
+            byte[] encrypted = cipher.doFinal(token.getBytes());
+
+            return Base64.getUrlEncoder()
+                    .encodeToString(encrypted);
+
+        } catch (UnsupportedEncodingException | NoSuchPaddingException | NoSuchAlgorithmException |
+                 IllegalBlockSizeException | BadPaddingException | InvalidAlgorithmParameterException |
+                 InvalidKeyException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @RequestMapping(value = "/pnDescifrado/{tokenCifrado}", method = RequestMethod.GET, produces = {MediaType.APPLICATION_JSON_VALUE})
+    public String pnDescifrado(@PathVariable("tokenCifrado") String token) {
+        try {
+            IvParameterSpec iv = new IvParameterSpec(PN_INIT_VECTOR.getBytes(STANDARDCHARSETS_UFT_8));
+            SecretKeySpec secretKeySpec = new SecretKeySpec(PN_AES_KEY.getBytes(StandardCharsets.UTF_8), ALGORITHM_AES);
+            Cipher cipher = Cipher.getInstance(TRANSFORMATION_AES);
+            cipher.init(Cipher.DECRYPT_MODE, secretKeySpec, iv);
+
+            byte[] desencriptado = cipher.doFinal(Base64.getUrlDecoder().decode(token));
+            return new String(desencriptado);
+        } catch (InvalidAlgorithmParameterException | UnsupportedEncodingException | NoSuchPaddingException |
+                 IllegalBlockSizeException | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
+            throw new RuntimeException(e);
         }
     }
 
