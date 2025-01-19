@@ -72,9 +72,27 @@ public class PetController {
 
     @RequestMapping(value = "updatePet/{petId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity updatePet(@PathVariable("petId") Long petId, @RequestBody PetModel petModel) {
-        log.info("START UPDATE PET");
-        petService.updatePet(petId, petModel);
-        log.info("ENS UPDATE PET");
-        return new ResponseEntity("MASCOTA ACTUALIZADA", HttpStatus.OK);
+        try {
+            log.info("START UPDATE PET");
+            petService.updatePet(petId, petModel);
+            log.info("ENS UPDATE PET");
+            return new ResponseEntity("MASCOTA ACTUALIZADA", HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+
+    }
+
+    @RequestMapping(value = "deletePet/{petId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity deletePet(@PathVariable("petId") Long petId) {
+        try {
+            log.info("START DELETE PET");
+            petService.deletePet(petId);
+            log.info("END DELETE PET");
+            return new ResponseEntity("MASCOTA ELIMINADA", HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+
     }
 }
