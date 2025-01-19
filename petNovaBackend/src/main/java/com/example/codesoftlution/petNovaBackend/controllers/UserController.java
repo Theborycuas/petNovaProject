@@ -32,17 +32,16 @@ import java.util.logging.Logger;
 import static com.example.codesoftlution.petNovaBackend.utils.Constants.*;
 
 @RestController
-@RequestMapping("api/users")
+@RequestMapping("apiPetNova/users")
 @CrossOrigin(origins = "*")
 public class UserController {
-    Logger log = Logger.getLogger(UserController.class.getName());
 
     @Autowired
     private UserService userService;
     @Autowired
-    private IUserRepository userRepository;
-    @Autowired
     HttpServletRequest request;
+
+    Logger log = Logger.getLogger(UserController.class.getName());
 
     @RequestMapping(value = "/userRegister", method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
     public ResponseEntity userRegister(@Valid @RequestBody UserModel userModel) {
