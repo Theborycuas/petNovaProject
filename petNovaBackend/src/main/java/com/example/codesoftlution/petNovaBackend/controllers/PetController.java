@@ -9,6 +9,7 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
@@ -26,13 +27,31 @@ public class PetController {
     public ResponseEntity petRegister(@Valid @RequestBody PetModel petModel) {
 
         try {
+            log.info("INICIO PETREGISTER");
             Optional<PetModel> mascotaEncontrada = petService.findByNameAndSpecieIdAndUserId(petModel.getName(), petModel.getSpecie().getId(), petModel.getUser().getId());
             if (!mascotaEncontrada.isPresent()) {
                 petService.savePet(petModel);
+                log.info("FIN PETREGISTER");
                 return new ResponseEntity("MASCOTA CREADA", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity("MASCOTA ENCONTRADA", HttpStatus.CONFLICT);
             }
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/getPetsByUser/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getPetsByUser(@PathVariable("userId") Long userId) {
+        try {
+
+            log.info("INICIO GET PETS BY USER");
+
+            List<PetModel> petModelList = petService.getAllPetsByUser(userId);
+
+            log.info("FIN GET PETS BY USER");
+            return new ResponseEntity(petModelList, HttpStatus.OK);
+
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
