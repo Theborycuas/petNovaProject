@@ -32,12 +32,13 @@ public class PetService {
 
     public PetModel updatePet(Long id, PetModel petModelUpdate) {
         PetModel petModel = getPetById(id);
-        petModel.setName(petModelUpdate.getName());
-        petModel.setRace(petModelUpdate.getRace());
-        petModel.setAge(petModelUpdate.getAge());
-        petModel.setColor(petModelUpdate.getColor());
-        petModel.setActive(petModelUpdate.isActive());
-        petModel.setObsevations(petModelUpdate.getObsevations());
+        //Utilizo Optional.ofNullable reemplazando el if para comparar si cada atributo viene vacio
+        Optional.ofNullable(petModelUpdate.getName()).ifPresent(petModel::setName);
+        Optional.ofNullable(petModelUpdate.getRace()).ifPresent(petModel::setRace);
+        Optional.ofNullable(petModelUpdate.getAge()).ifPresent(petModel::setAge);
+        Optional.ofNullable(petModelUpdate.getColor()).ifPresent(petModel::setColor);
+        Optional.of(petModelUpdate.isActive()).ifPresent(petModel::setActive);
+        Optional.ofNullable(petModelUpdate.getObsevations()).ifPresent(petModel::setObsevations);
         return petRepository.save(petModel);
     }
 

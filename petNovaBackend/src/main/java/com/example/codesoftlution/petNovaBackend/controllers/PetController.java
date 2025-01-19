@@ -27,11 +27,11 @@ public class PetController {
     public ResponseEntity petRegister(@Valid @RequestBody PetModel petModel) {
 
         try {
-            log.info("INICIO PETREGISTER");
+            log.info("START PETREGISTER");
             Optional<PetModel> mascotaEncontrada = petService.findByNameAndSpecieIdAndUserId(petModel.getName(), petModel.getSpecie().getId(), petModel.getUser().getId());
             if (!mascotaEncontrada.isPresent()) {
                 petService.savePet(petModel);
-                log.info("FIN PETREGISTER");
+                log.info("END PETREGISTER");
                 return new ResponseEntity("MASCOTA CREADA", HttpStatus.CREATED);
             } else {
                 return new ResponseEntity("MASCOTA ENCONTRADA", HttpStatus.CONFLICT);
@@ -45,15 +45,36 @@ public class PetController {
     public ResponseEntity getPetsByUser(@PathVariable("userId") Long userId) {
         try {
 
-            log.info("INICIO GET PETS BY USER");
+            log.info("START GET PETS BY USER");
 
             List<PetModel> petModelList = petService.getAllPetsByUser(userId);
 
-            log.info("FIN GET PETS BY USER");
+            log.info("END GET PETS BY USER");
             return new ResponseEntity(petModelList, HttpStatus.OK);
 
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+    }
+
+    @RequestMapping(value = "/getPetById/{petId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getPetById(@PathVariable("petId") Long petId) {
+        try {
+            log.info("START GET PET BY ID");
+            PetModel petModel = petService.getPetById(petId);
+            log.info("END GET PET BY ID");
+            return new ResponseEntity(petModel, HttpStatus.OK);
+
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "updatePet/{petId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity updatePet(@PathVariable("petId") Long petId, @RequestBody PetModel petModel) {
+        log.info("START UPDATE PET");
+        petService.updatePet(petId, petModel);
+        log.info("ENS UPDATE PET");
+        return new ResponseEntity("MASCOTA ACTUALIZADA", HttpStatus.OK);
     }
 }

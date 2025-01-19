@@ -27,6 +27,7 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.Base64;
 import java.util.List;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 import static com.example.codesoftlution.petNovaBackend.utils.Constants.*;
@@ -66,21 +67,14 @@ public class UserController {
 
             UserModel usuarioEncontrado = userService.findUserByTokenAndActive(token, true);
             if(usuarioEncontrado != null) {
-                if(dataUserUpdate.getName() != null){
-                    usuarioEncontrado.setName(dataUserUpdate.getName());
-                }
-                if (dataUserUpdate.getEmail() != null) {
-                    usuarioEncontrado.setEmail(dataUserUpdate.getEmail());
-                }
-                if (dataUserUpdate.getIdNumber() != null) {
-                    usuarioEncontrado.setIdNumber(dataUserUpdate.getIdNumber());
-                }
-                if (dataUserUpdate.getPhoneNumber() != null) {
-                    usuarioEncontrado.setPhoneNumber(dataUserUpdate.getPhoneNumber());
-                }
-                if (dataUserUpdate.getLinkPerfilPhoto() != null) {
-                    usuarioEncontrado.setLinkPerfilPhoto(dataUserUpdate.getLinkPerfilPhoto());
-                }
+                //Utilizo Optional.ofNullable reemplazando el if para comparar si cada atributo viene vacio
+                Optional.ofNullable(dataUserUpdate.getName()).ifPresent(usuarioEncontrado::setName);
+                Optional.ofNullable(dataUserUpdate.getUsername()).ifPresent(usuarioEncontrado::setUsername);
+                Optional.ofNullable(dataUserUpdate.getEmail()).ifPresent(usuarioEncontrado::setEmail);
+                Optional.ofNullable(dataUserUpdate.getIdNumber()).ifPresent(usuarioEncontrado::setIdNumber);
+                Optional.ofNullable(dataUserUpdate.getPhoneNumber()).ifPresent(usuarioEncontrado::setPhoneNumber);
+                Optional.ofNullable(dataUserUpdate.getLinkPerfilPhoto()).ifPresent(usuarioEncontrado::setLinkPerfilPhoto);
+
                 userService.registerSetUser(usuarioEncontrado);
                 return new ResponseEntity("USUARIO ACTUALIZADO", HttpStatus.OK);
             }else {
