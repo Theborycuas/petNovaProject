@@ -3,6 +3,7 @@ package com.example.codesoftlution.petNovaBackend.services;
 import com.example.codesoftlution.petNovaBackend.models.CitaModel;
 import com.example.codesoftlution.petNovaBackend.models.UserModel;
 import com.example.codesoftlution.petNovaBackend.repositories.ICitaRepository;
+import com.example.codesoftlution.petNovaBackend.repositories.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,9 +16,17 @@ public class CitaService {
     @Autowired
     private ICitaRepository citaRepository;
     @Autowired
-    private UserService userService;
+    private IUserRepository userRepository;
 
     public CitaModel registrarCitas(CitaModel cita) {
+
+        //Validar que el Usuario sea de tipo VETERINARIO
+        UserModel userVeterinario = userRepository.findById(cita.getVeterinario().getId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+         if(!"VETERINARIO".equalsIgnoreCase(userVeterinario.getRole().getRoleName())){
+            throw new RuntimeException("El usuario asignado no tiene el rol de veterinario.");
+        }
 
         // Validación: Verificamos si ya existe una cita en el mismo horario para el veterinario
         List<CitaModel> citas = citaRepository.findByVeterinarioIdAndFechaHoraBetween(
@@ -29,7 +38,6 @@ public class CitaService {
             throw new RuntimeException("EL VETERINARIO YA TIENE UNA CITA EN ESTE HORARIO");
         }
 
-        //Validar que el Usuario Doctor sea de tipo Veterinario
         return citaRepository.save(cita);
     }
 
