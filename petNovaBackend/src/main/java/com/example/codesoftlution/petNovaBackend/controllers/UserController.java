@@ -1,7 +1,9 @@
 package com.example.codesoftlution.petNovaBackend.controllers;
 
 
+import com.example.codesoftlution.petNovaBackend.models.RoleModel;
 import com.example.codesoftlution.petNovaBackend.models.UserModel;
+import com.example.codesoftlution.petNovaBackend.repositories.IRoleRepository;
 import com.example.codesoftlution.petNovaBackend.repositories.IUserRepository;
 import com.example.codesoftlution.petNovaBackend.response.ListUserResponse;
 import com.example.codesoftlution.petNovaBackend.response.ResponseDataUserUpdate;
@@ -41,6 +43,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     HttpServletRequest request;
+    @Autowired
+    IRoleRepository roleRepository;
 
     Logger log = Logger.getLogger(UserController.class.getName());
 
@@ -50,7 +54,17 @@ public class UserController {
             log.info("START USER REGISTER");
             UserModel usuarioEncontrado = userService.findUserByEmail(userModel.getEmail(), true);
             if (usuarioEncontrado == null) {
-                userService.registerSetUser(userModel);
+                if(userModel.getOffice() != null) {
+                    RoleModel rolEncontrado = roleRepository.findById(userModel.getRole().getId())
+                            .orElseThrow(()->new RuntimeException("No se encontro el role"));
+                    if (rolEncontrado.getRoleName().equals("VETERINARIO")){
+                        userService.registerSetUser(userModel);
+                    } else {
+                        throw new RuntimeException("Solo los usuarios con rol de VETERINARIO pueden estar asociados a un consultorio.");
+                    }
+                }else {
+                    userService.registerSetUser(userModel);
+                }
                 log.info("END USER REGISTER");
                 return new ResponseEntity("USUARIO CREADO", HttpStatus.CREATED);
             } else {
