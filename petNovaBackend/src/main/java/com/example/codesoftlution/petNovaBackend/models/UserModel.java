@@ -42,4 +42,8 @@ public class UserModel {
     @Column(columnDefinition = "TEXT")
     private String linkPerfilPhoto;
 
+    @ManyToOne
+    @JoinColumn(name = "office_id")
+    private OfficeModel office;
+
 }
