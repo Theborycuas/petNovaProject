@@ -10,8 +10,8 @@ import java.time.LocalDateTime;
 @Getter
 @Setter
 @Entity
-@Table(name = "citas")
-public class CitaModel {
+@Table(name = "medital_histories")
+public class MedicalHistoryModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,18 +21,23 @@ public class CitaModel {
     @JoinColumn(name = "pet_id", nullable = false)
     private PetModel pet;
 
-    @Column(nullable = false)
-    private LocalDateTime fechaHora;
-
-    @Column(nullable = false)
-    private String motivo;
-
-    @Column(columnDefinition = "TEXT")
-    private String obsevations;
-
     @ManyToOne
     @JoinColumn(name = "veterinario_id", nullable = false)
     private UserModel veterinario;
+
+    private LocalDateTime fechaConsulta;
+
+    @Column(nullable = false)
+    private String motivoConsulta;
+
+    @Column(columnDefinition = "TEXT")
+    private String diagnostico;
+
+    @Column(columnDefinition = "TEXT")
+    private String tratamiento;
+
+    @Column(columnDefinition = "TEXT")
+    private String observaciones;
 
     private boolean active;
 }
