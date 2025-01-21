@@ -32,7 +32,7 @@ public class OfficeController {
     public ResponseEntity resgisterOffice(
             @Valid @RequestParam Long userId,
             @Valid @RequestBody OfficeModel officeModel,
-            @Valid @RequestParam(required = false) Long veterinarioId
+            @RequestParam(required = false) Long veterinarioId
     ) {
         try {
             log.info("START OFICE REGISTER");
@@ -42,7 +42,6 @@ public class OfficeController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
-
     }
 
     @RequestMapping(value = "/listAllOffice", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -68,6 +67,36 @@ public class OfficeController {
             return new ResponseEntity(officeModel, HttpStatus.OK);
 
         } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/updateOfficeById/{officeId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity updateOfficeById(
+            @Valid @PathVariable Long officeId,
+            @Valid @RequestParam Long userId,
+            @Valid @RequestBody OfficeModel officeModel) {
+        try {
+            log.info("START OFFICE UPDATE BY ID");
+            OfficeModel officeModelEncontrado = officeService.updateOffice(officeId, userId, officeModel);
+            log.info("END OFIFCE UPDATE BY ID");
+            return new ResponseEntity(officeModelEncontrado, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "deleteOfficeById/{officeId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity deleteOfficeById(
+            @Valid @PathVariable Long officeId,
+            @Valid @RequestParam Long userId
+    ){
+        try {
+            log.info("START OFICE DELETE BY ID");
+            OfficeModel officeModelEncontrado = officeService.deleteOffice(officeId, userId);
+            log.info("END OFICE DELETE BY ID");
+            return new ResponseEntity(officeModelEncontrado, HttpStatus.OK);
+        }catch (Exception e){
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
     }

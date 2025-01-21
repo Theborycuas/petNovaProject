@@ -26,6 +26,8 @@ public class OfficeModel {
     @Column(columnDefinition = "TEXT")
     private String linkLogoPhoto;
 
+    private boolean active;
+
     //Veterinario Asociado al consultorio
     @ManyToOne
     @JoinColumn(name = "veterinario_id")

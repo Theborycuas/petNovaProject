@@ -25,7 +25,7 @@ public class OfficeService {
                 .orElseThrow(() -> new RuntimeException("Usuario no Encontrado"));
 
         //Validar que se tenga el Rol para crear consultorio
-        if(!"VETERINARIO".equalsIgnoreCase(userModel.getRole().getRoleName()) && !"ADMIN".equalsIgnoreCase(userModel.getRole().getRoleName())){
+        if(!"VETERINARIO".equalsIgnoreCase(userModel.getRole().getRoleName()) && !"OFFICE_ADMIN".equalsIgnoreCase(userModel.getRole().getRoleName())){
             throw new RuntimeException("Solo un administrador o un veterinario pueden registrar consultorios.");
         }
 
@@ -59,5 +59,42 @@ public class OfficeService {
 
     public Optional<OfficeModel> getOfficeById(Long officeId) {
         return officeRepository.findById(officeId);
+    }
+
+    public OfficeModel updateOffice(Long officeId, Long userId, OfficeModel officeModel) {
+
+        UserModel userModel = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario no Encontrado"));
+
+        //Validar que se tenga el Rol para crear consultorio
+        if(!"VETERINARIO".equalsIgnoreCase(userModel.getRole().getRoleName()) && !"OFFICE_ADMIN".equalsIgnoreCase(userModel.getRole().getRoleName())){
+            throw new RuntimeException("Solo un administrador o un veterinario pueden registrar consultorios.");
+        }
+
+        OfficeModel consultorioEncontrado = officeRepository.findById(officeId)
+                .orElseThrow(() -> new RuntimeException("Consultorio no Encontrado"));
+
+        Optional.ofNullable(officeModel.getName()).ifPresent(consultorioEncontrado::setName);
+        Optional.ofNullable(officeModel.getPhoneNumber()).ifPresent(consultorioEncontrado::setPhoneNumber);
+        Optional.ofNullable(officeModel.getAddress()).ifPresent(consultorioEncontrado::setAddress);
+        Optional.ofNullable(officeModel.getLinkLogoPhoto()).ifPresent(consultorioEncontrado::setLinkLogoPhoto);
+
+        return officeRepository.save(consultorioEncontrado);
+    }
+
+    public OfficeModel deleteOffice(Long officeId, Long userId) {
+        UserModel userModel = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("Usuario no Encontrado"));
+
+        //Validar que se tenga el Rol para crear consultorio
+        if(!"VETERINARIO".equalsIgnoreCase(userModel.getRole().getRoleName()) && !"OFFICE_ADMIN".equalsIgnoreCase(userModel.getRole().getRoleName())){
+            throw new RuntimeException("Solo un administrador o un veterinario pueden registrar consultorios.");
+        }
+
+        OfficeModel consultorioEncontrado = officeRepository.findById(officeId)
+                .orElseThrow(() -> new RuntimeException("Consultorio no Encontrado"));
+
+        consultorioEncontrado.setActive(false);
+        return officeRepository.save(consultorioEncontrado);
     }
 }
