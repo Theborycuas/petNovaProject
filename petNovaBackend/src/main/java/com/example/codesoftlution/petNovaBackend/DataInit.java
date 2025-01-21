@@ -26,10 +26,10 @@ public class DataInit {
     public void createDataPetNova() {
 
         //CREATED DATA INIT ROLS
-        if (!iRoleRepository.existsByRoleName("ADMIN")) {
+        if (!iRoleRepository.existsByRoleName("SUPER_ADMIN")) {
             RoleModel role1 = new RoleModel();
-            role1.setRoleName("ADMIN");
-            role1.setDescription("Usuario ADMIN");
+            role1.setRoleName("SUPER_ADMIN");
+            role1.setDescription("Usuario SUPER_ADMIN");
             iRoleRepository.save(role1);
         }
 
@@ -52,6 +52,13 @@ public class DataInit {
             role4.setRoleName("USUARIO");
             role4.setDescription("Usuario USUARIO");
             iRoleRepository.save(role4);
+        }
+
+        if (!iRoleRepository.existsByRoleName("OFFICE_ADMIN")) {
+            RoleModel role5 = new RoleModel();
+            role5.setRoleName("OFFICE_ADMIN");
+            role5.setDescription("Usuario OFFICE_ADMIN");
+            iRoleRepository.save(role5);
         }
 
         //CREATED DATA INIT SPECIES
@@ -96,6 +103,12 @@ public class DataInit {
             SpecieModel specie7 = new SpecieModel();
             specie7.setName("AVE");
             iSpecieRepository.save(specie7);
+        }
+
+        if(!iSpecieRepository.existsByName("CONEJO")){
+            SpecieModel specie8 = new SpecieModel();
+            specie8.setName("CONEJO");
+            iSpecieRepository.save(specie8);
         }
     }
 }
