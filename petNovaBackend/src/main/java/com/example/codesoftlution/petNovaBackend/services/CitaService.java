@@ -46,7 +46,7 @@ public class CitaService {
     }
 
     public CitaModel getCitaById(Long id) {
-        return citaRepository.findById(id).orElseThrow(() -> new RuntimeException("El cita no existe"));
+        return citaRepository.findById(id).orElseThrow(() -> new RuntimeException("La cita no existe"));
     }
 
     public CitaModel actualizarCita(Long id, CitaModel citaActualizada) {
@@ -63,7 +63,7 @@ public class CitaService {
     public void eliminarCita(Long id) {
         CitaModel cita = getCitaById(id);
 
-        cita.setActivo(false);
+        cita.setActive(false);
         citaRepository.save(cita);
     }
 
