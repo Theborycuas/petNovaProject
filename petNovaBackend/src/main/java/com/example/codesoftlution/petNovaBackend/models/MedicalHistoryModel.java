@@ -6,6 +6,7 @@ import lombok.Setter;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -40,4 +41,7 @@ public class MedicalHistoryModel {
     private String observaciones;
 
     private boolean active;
+
+    @OneToMany(mappedBy = "medicalHistoryModel", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VaccineModel> vaccines;
 }
