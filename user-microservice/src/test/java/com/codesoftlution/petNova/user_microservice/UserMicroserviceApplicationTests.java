@@ -1,10 +1,10 @@
-package com.example.codesoftlution.petNovaBackend;
+package com.codesoftlution.petNova.user_microservice;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class PetNovaBackendApplicationTests {
+class UserMicroserviceApplicationTests {
 
 	@Test
 	void contextLoads() {
