@@ -34,7 +34,7 @@ public class VaccinesController {
         }
     }
 
-    @RequestMapping(value = "getVaccinesByMedicalH/{medicalHId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/getVaccinesByMedicalH/{medicalHId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     private ResponseEntity getVaccinesByMedicalH(@PathVariable Long medicalHId) {
         try {
             log.info("START GET VACCINE BY MEDICAL H");
@@ -45,6 +45,43 @@ public class VaccinesController {
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+    }
+
+    @RequestMapping(value = "/getVaccineById/{vaccineId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    private ResponseEntity getVaccineById(@PathVariable Long vaccineId) {
+        try {
+            log.info("START GET VACCINE BY ID");
+            VaccineModel vaccineFound = vaccinesService.getVaccineById(vaccineId);
+            log.info("END GET VACCINE BY ID");
+            return new ResponseEntity(vaccineFound, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/updateVaccine/{vaccineId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    private ResponseEntity updateVaccine(@PathVariable Long vaccineId, @RequestBody VaccineModel vaccineModel) {
+        try {
+            log.info("START UPDATE VACCINE BY ID");
+            VaccineModel vaccineFound = vaccinesService.updateVaccine(vaccineId, vaccineModel);
+            log.info("END UPDATE VACCINE BY ID");
+            return new ResponseEntity(vaccineFound, HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/deleteVaccine/{vaccineId}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    private ResponseEntity deleteVaccine(@PathVariable Long vaccineId) {
+        try {
+            log.info("START DELETE VACCINE BY ID");
+            vaccinesService.deleteVaccine(vaccineId);
+            log.info("END DELETE VACCINE BY ID");
+            return new ResponseEntity("VACUNA ELIMINADA", HttpStatus.OK);
+        }catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
+
     }
 
 
