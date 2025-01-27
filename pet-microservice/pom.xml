@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.codesoftlution.petNova</groupId>
-	<artifactId>user-microservice</artifactId>
+	<artifactId>pet-microservice</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>user-microservice</name>
-	<description>Users gestion with Microservice</description>
+	<name>pet-microservice</name>
+	<description>Pets gestion with Microservice</description>
 	<url/>
 	<licenses>
 		<license/>
