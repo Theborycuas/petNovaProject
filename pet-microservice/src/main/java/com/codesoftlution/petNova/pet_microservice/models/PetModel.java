@@ -25,9 +25,11 @@ public class PetModel {
     @Column(columnDefinition = "TEXT")
     private String obsevations;
 
-
     @ManyToOne
     @JoinColumn(name = "species_id", nullable = false)
     private SpecieModel specie;
+
+    @Column(unique = true, nullable = false)
+    private Long userId;
 
 }

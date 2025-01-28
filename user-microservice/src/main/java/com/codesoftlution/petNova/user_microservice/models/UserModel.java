@@ -42,4 +42,7 @@ public class UserModel {
     @Column(columnDefinition = "TEXT")
     private String linkPerfilPhoto;
 
+    @Column(nullable = false, unique = true)
+    private Long office;
+
 }
