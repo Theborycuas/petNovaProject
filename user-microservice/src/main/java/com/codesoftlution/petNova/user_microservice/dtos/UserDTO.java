@@ -1,19 +1,19 @@
-package com.codesoftlution.petNova.user_microservice.models;
+package com.codesoftlution.petNova.user_microservice.dtos;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@Entity
-@Table(name = "users")
-public class UserModel {
+@NoArgsConstructor
+@AllArgsConstructor
+public class UserDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
@@ -22,17 +22,10 @@ public class UserModel {
 
     @Column(unique = true, nullable = false)
     private String email;
-    @Column(nullable = false)
-    private String password;
 
-    @ManyToOne
-    @JoinColumn(name = "role_id", nullable = false)
-    private RoleModel role;
+    private String rollName;
     private String phoneNumber;
     private boolean active;
-
-    @Column(columnDefinition = "TEXT")
-    private String token;
 
     @Column(columnDefinition = "TEXT")
     private String firebaseToken;
@@ -42,6 +35,6 @@ public class UserModel {
     @Column(columnDefinition = "TEXT")
     private String linkPerfilPhoto;
 
+    @Column(nullable = false, unique = true)
     private Long officeId;
-
 }

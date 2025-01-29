@@ -4,6 +4,7 @@ import com.codesoftlution.petNova.user_microservice.models.UserModel;
 import com.codesoftlution.petNova.user_microservice.respositories.IUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +13,9 @@ import java.util.List;
 public class UserService {
     @Autowired
     IUserRepository iUserRepository;
+
+    @Autowired
+    RestTemplate restTemplate;
 
     public UserModel findUserByEmail(String email, boolean active) {
         return iUserRepository.findUserByEmailAndActive(email, active);

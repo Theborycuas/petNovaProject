@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.Optional;
 
 public interface IPetRepository extends JpaRepository<PetModel, Long> {
-    /*List<PetModel> findByUserId(Long userId);
-    Optional<PetModel> findByNameAndSpecieIdAndUserId(String name, Long specieId, Long userId);*/
+    List<PetModel> findByUserId(Long userId);
+    Optional<PetModel> findByNameAndSpecieIdAndUserId(String name, Long specieId, Long userId);
 }

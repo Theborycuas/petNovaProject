@@ -29,7 +29,7 @@ public class PetModel {
     @JoinColumn(name = "species_id", nullable = false)
     private SpecieModel specie;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private Long userId;
 
 }

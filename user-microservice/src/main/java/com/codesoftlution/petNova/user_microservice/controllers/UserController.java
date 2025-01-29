@@ -1,10 +1,12 @@
 package com.codesoftlution.petNova.user_microservice.controllers;
 
+import com.codesoftlution.petNova.user_microservice.mappers.UserMapper;
 import com.codesoftlution.petNova.user_microservice.models.RoleModel;
 import com.codesoftlution.petNova.user_microservice.models.UserModel;
 import com.codesoftlution.petNova.user_microservice.response.ListUserResponse;
 import com.codesoftlution.petNova.user_microservice.response.ResponseDataUserUpdate;
 import com.codesoftlution.petNova.user_microservice.respositories.IRoleRepository;
+import com.codesoftlution.petNova.user_microservice.respositories.IUserRepository;
 import com.codesoftlution.petNova.user_microservice.services.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
@@ -30,6 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.logging.Logger;
 
+import static com.codesoftlution.petNova.user_microservice.mappers.UserMapper.toUserDTO;
 import static com.codesoftlution.petNova.user_microservice.utils.Constants.*;
 
 
@@ -40,6 +43,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private IUserRepository userRepository;
     @Autowired
     HttpServletRequest request;
     @Autowired
@@ -53,7 +58,7 @@ public class UserController {
             log.info("START USER REGISTER");
             UserModel usuarioEncontrado = userService.findUserByEmail(userModel.getEmail(), true);
             if (usuarioEncontrado == null) {
-                //if(userModel.getOffice() != null) {
+                if(userModel.getOfficeId() != null) {
                     RoleModel rolEncontrado = roleRepository.findById(userModel.getRole().getId())
                             .orElseThrow(()->new RuntimeException("No se encontro el role"));
                     if (rolEncontrado.getRoleName().equals("VETERINARIO")){
@@ -61,9 +66,9 @@ public class UserController {
                     } else {
                         throw new RuntimeException("Solo los usuarios con rol de VETERINARIO pueden estar asociados a un consultorio.");
                     }
-                //}else {
+                }else {
                     userService.registerSetUser(userModel);
-               // }
+               }
                 log.info("END USER REGISTER");
                 return new ResponseEntity("USUARIO CREADO", HttpStatus.CREATED);
             } else {
@@ -76,20 +81,33 @@ public class UserController {
     }
 
     @RequestMapping(value = "/getUserByToken/{userToken}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity getUserById(@PathVariable("userToken") String userToken) {
+    public ResponseEntity getUserByToken(@PathVariable("userToken") String userToken) {
         try {
             log.info("START USER GET USER BY TOKEN: ");
-            UserModel usuaroEncontrado = userService.findUserByTokenAndActive(userToken, true);
-            if (usuaroEncontrado != null) {
+            UserModel userFound = userService.findUserByTokenAndActive(userToken, true);
+            if (userFound != null) {
                 log.info("END USER GET USER BY TOKEN: ");
-                return new ResponseEntity(usuaroEncontrado, HttpStatus.OK);
+                return new ResponseEntity(userFound, HttpStatus.OK);
             } else {
                 return new ResponseEntity("USUARIO NO ENCONTRADO", HttpStatus.NOT_FOUND);
             }
         }catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
         }
+    }
 
+    @RequestMapping(value = "/getUserById/{userId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity getUserById(@PathVariable("userId") Long userId) {
+        try {
+            log.info("START USER GET USER BY ID: ");
+            UserModel userFound = userRepository.findById(userId)
+                    .orElseThrow(()->new RuntimeException("No se encontro el usuario"));
+            log.info("END USER GET USER BY ID: ");
+
+            return new ResponseEntity(toUserDTO(userFound), HttpStatus.OK);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+        }
     }
 
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST, produces = {MediaType.APPLICATION_JSON_VALUE})
