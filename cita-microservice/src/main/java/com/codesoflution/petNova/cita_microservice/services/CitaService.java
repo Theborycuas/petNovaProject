@@ -1,5 +1,6 @@
 package com.codesoflution.petNova.cita_microservice.services;
 
+import com.codesoflution.petNova.cita_microservice.clientsfeign.UserFeignClient;
 import com.codesoflution.petNova.cita_microservice.dtos.UserDTO;
 import com.codesoflution.petNova.cita_microservice.models.CitaModel;
 import com.codesoflution.petNova.cita_microservice.repositories.ICitaRepository;
@@ -9,6 +10,8 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Supplier;
+import java.util.logging.Logger;
 
 @Service
 public class CitaService {
@@ -19,12 +22,19 @@ public class CitaService {
     @Autowired
     RestTemplate restTemplate;
 
+    @Autowired
+    UserFeignClient userFeignClient;
+
     public CitaModel registrarCitas(CitaModel cita) {
 
-        UserDTO userDTO = restTemplate.getForObject("http://localhost:8001/apiPetNova/users/getUserById/" + cita.getVeterinarioId(), UserDTO.class);
+        //USANDO FEIGN CLIENTE
+        UserDTO userDTO = userFeignClient.getUserById(cita.getVeterinarioId());
+
+        //USANDO RESTTEMPLATE
+        //UserDTO userDTO = restTemplate.getForObject("http://localhost:8001/apiPetNova/users/getUserById/" + cita.getVeterinarioId(), UserDTO.class);
+
 
         //Validar que el Usuario sea de tipo VETERINARIO
-
         assert userDTO != null;
         if(!"VETERINARIO".equalsIgnoreCase(userDTO.getRollName())){
             throw new RuntimeException("El usuario asignado no tiene el rol de veterinario.");

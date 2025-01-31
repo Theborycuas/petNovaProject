@@ -1,5 +1,6 @@
 package com.codesoflution.petNova.cita_microservice.controllers;
 
+import com.codesoflution.petNova.cita_microservice.clientsfeign.UserFeignClient;
 import com.codesoflution.petNova.cita_microservice.models.CitaModel;
 import com.codesoflution.petNova.cita_microservice.services.CitaService;
 import jakarta.servlet.http.HttpServletRequest;
