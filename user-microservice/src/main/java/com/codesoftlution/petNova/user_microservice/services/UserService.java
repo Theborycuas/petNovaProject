@@ -1,0 +1,38 @@
+package com.codesoftlution.petNova.user_microservice.services;
+
+import com.codesoftlution.petNova.user_microservice.models.UserModel;
+import com.codesoftlution.petNova.user_microservice.respositories.IUserRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.time.LocalDateTime;
+import java.util.List;
+
+@Service
+public class UserService {
+    @Autowired
+    IUserRepository iUserRepository;
+
+    @Autowired
+    RestTemplate restTemplate;
+
+    public UserModel findUserByEmail(String email, boolean active) {
+        return iUserRepository.findUserByEmailAndActive(email, active);
+    }
+
+    public UserModel findUserByTokenAndActive(String token, boolean active) {
+        return iUserRepository.findByTokenAndActive(token, active);
+    }
+
+    public List<UserModel> getUsers() {
+        return iUserRepository.findAll();
+    }
+
+    public UserModel registerSetUser(UserModel userModel) {
+        LocalDateTime dateNow = LocalDateTime.now();
+        userModel.setCreationDate(dateNow);
+        userModel.setToken("987654321");
+        return iUserRepository.save(userModel);
+    }
+}
